@@ -1,4 +1,4 @@
-# TP2 — MVVM Angular (AGENT)
+# TP2 — MVVM Angular 
 
 Atelier **TP2** : mise en œuvre de l'**architecture MVVM** (_Model – View – ViewModel_) avec **Angular**.
 
