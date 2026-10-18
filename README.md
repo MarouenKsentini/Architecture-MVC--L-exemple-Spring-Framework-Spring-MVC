@@ -1,39 +1,57 @@
-# TP2 — MVVM Angular 
+# TP2 — MVVM Angular (`produit-app`)
 
-Atelier **TP2** : mise en œuvre de l'**architecture MVVM** (_Model – View – ViewModel_) avec **Angular**.
+Client **Angular** pour l'API REST Spring Boot (`/api/produits`, `http://localhost:8080`), illustrant l'architecture **MVVM** (_Model – View – ViewModel_).
 
-Même domaine que l'atelier Spring MVC : la gestion de **produits** (`id`, `libelle`, `prix`, `qteStock`).
+Fonctionnalités : lister, ajouter, modifier, supprimer, **rechercher par libellé**, **filtrer par prix max**, **filtrer par état du stock**.
+
+## Prérequis
+
+- Node.js + npm, Angular CLI
+- Le back-end **Spring Boot** qui tourne sur `http://localhost:8080`
+  (projet de l'atelier MVC : branche `main` ; lancer via `runapp.bat` ou `mvn spring-boot:run`)
 
 ## Correspondance MVVM
 
 | Couche | Fichier | Rôle |
 |---|---|---|
-| **Model** | `src/app/models/product.model.ts` | L'entité `Product` (les données) |
-| **Model** | `src/app/services/product.service.ts` | Couche données : état (`signal`), `add`, `remove`, `findById` |
-| **ViewModel** | `src/app/components/product-list/product-list.ts` | Expose l'état (`products`, `total`) et les actions (`add`, `remove`) |
-| **View** | `src/app/components/product-list/product-list.html` | Template : affiche l'état, délègue les clics au ViewModel |
+| **Model** | `src/app/models/produit.model.ts` | L'entité `Produit` |
+| **Model** | `src/app/services/produit.service.ts` | Seul endroit qui utilise `HttpClient` et connaît l'URL `"/api/produits"` |
+| **ViewModel** | `src/app/viewmodels/produit.viewmodel.ts` | État (`signal`), état dérivé (`computed` : `produitsFiltres`, `nombreAffiches`…), actions (`charger`, `enregistrer`, `supprimer`, filtres) |
+| **View** | `src/app/views/produit-list/produit-list.component.{ts,html,css}` | Template : `@if` / `@for`, `[(ngModel)]="vm.xxx"`, délègue au ViewModel |
 
-Le composant (ViewModel) ne manipule jamais la liste directement : il passe toujours par le service (Model). La vue ne contient aucune logique.
+Le composant (View) ne contient ni HTML logique ni appels HTTP : la `confirm()` reste dans le composant, tout le reste passe par le ViewModel → le service.
 
-## Démarrer
+## Lancer
 
 ```bash
-npm install      # (déjà fait à la génération)
-npm start        # -> http://localhost:4200
+npm install
+npm start        # ng serve --proxy-config proxy.conf.json  -> http://localhost:4200
 ```
+
+### Pourquoi un proxy ?
+
+L'application appelle l'URL **relative** `/api/produits`. Le fichier `proxy.conf.json` fait suivre les requêtes `/api/*` du serveur de dev (4200) vers Spring (8080), ce qui évite le CORS. Sans le proxy, l'appel partirait vers 4200 (404) ou serait bloqué par le navigateur.
 
 ## Tester
 
 ```bash
-npm test         # tests unitaires (Vitest + jsdom)
+npm test         # tests unitaires (Vitest + jsdom) : ProduitService (GET/POST/DELETE)
 npm run build    # build de production
 ```
 
-Tests inclus (`app.spec.ts`, `product-list.spec.ts`) : création du composant, affichage des produits, ajout, suppression.
+## Comportement réseau attendu
+
+| Action dans l'interface | Méthode et URL | Code attendu |
+|---|---|---|
+| Chargement | `GET /api/produits` | 200 |
+| Ajouter | `POST /api/produits` (puis GET) | 200 / 201 |
+| Modifier | `PUT /api/produits/{id}` (puis GET) | 200 |
+| Supprimer | `DELETE /api/produits/{id}` | 204 |
+| Recherche / filtres | aucune requête (calculé dans le navigateur) | — |
 
 ## Stack
 
-- Angular 22 (composants **standalone**, **signals**)
-- RxJS 7
-- TypeScript 6
+- Angular 22 — composants **standalone**, **signals**, `computed`, syntaxe `@if` / `@for`
+- `HttpClient`, `FormsModule`, `DecimalPipe`
+- Bootstrap 5.3.3 (CDN)
 - Tests : **Vitest** + jsdom
