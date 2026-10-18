@@ -1,0 +1,2 @@
+{"libelle":"Produit Test","prix":100.0,"qteStock":10,"id":1}
+HTTP 200

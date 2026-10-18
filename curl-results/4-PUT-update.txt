@@ -1,0 +1,2 @@
+{"libelle":"Produit Modifie","prix":150.0,"qteStock":5,"id":1}
+HTTP 200

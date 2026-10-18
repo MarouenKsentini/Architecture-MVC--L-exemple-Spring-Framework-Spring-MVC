@@ -1,0 +1,36 @@
+Test de l'API ProduitRestController
+Base URL : http://localhost:8080/api/produits
+Date     : 2026-10-18 09:52:00
+
+IMPORTANT (Windows PowerShell) : utiliser curl.exe, pas l'alias curl (=Invoke-WebRequest).
+Sous Git Bash / WSL / Linux, la syntaxe du sujet avec \ et '...' fonctionne telle quelle.
+
+=== 1) AJOUTER un nouveau produit  (POST /api/produits) ===
+bash       : curl -X POST http://localhost:8080/api/produits -H "Content-Type: application/json" -d '{"libelle":"Produit Test", "prix": 100.0, "qteStock": 10}'
+PowerShell : curl.exe -s -X POST http://localhost:8080/api/produits -H "Content-Type: application/json" -d "@new-produit.json"
+Reponse :
+{"libelle":"Produit Test","prix":100.0,"qteStock":10,"id":6} HTTP 201
+--> id genere = 6
+
+=== 2) RECUPERER tous les produits  (GET /api/produits) ===
+curl.exe -s http://localhost:8080/api/produits
+Reponse :
+[{"libelle":"Produit Test","prix":100.0,"qteStock":10,"id":1},{"libelle":"Inline Test","prix":1.0,"qteStock":1,"id":4},{"libelle":"Inline2","prix":2.0,"qteStock":2,"id":5},{"libelle":"Produit Test","prix":100.0,"qteStock":10,"id":6}] HTTP 200
+
+=== 3) RECUPERER un produit par son ID  (GET /api/produits/6) ===
+curl.exe -s http://localhost:8080/api/produits/6
+Reponse :
+{"libelle":"Produit Test","prix":100.0,"qteStock":10,"id":6} HTTP 200
+
+=== 4) METTRE A JOUR un produit selon un id  (PUT /api/produits/6) ===
+curl.exe -s -X PUT http://localhost:8080/api/produits/6 -H "Content-Type: application/json" -d "@update-produit.json"
+Reponse :
+{"libelle":"Produit Modifie","prix":150.0,"qteStock":5,"id":6} HTTP 200
+
+=== 5) SUPPRIMER un produit selon un id  (DELETE /api/produits/6) ===
+curl.exe -s -i -X DELETE http://localhost:8080/api/produits/6
+Reponse :
+HTTP 204
+
+=== Verification : le produit supprime n'existe plus  (GET /api/produits/6) ===
+HTTP 404  (404 attendu)
