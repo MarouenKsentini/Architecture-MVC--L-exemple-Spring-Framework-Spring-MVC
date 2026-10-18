@@ -2,11 +2,12 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
-    "packageManager": "npm"
+    "packageManager": "npm",
+    "analytics": "dbb8fe13-d80e-4506-ab53-00177f98f46b"
   },
   "newProjectRoot": "projects",
   "projects": {
-    "tp2-mvvm-angular": {
+    "produit-app": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -56,10 +57,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "tp2-mvvm-angular:build:production"
+              "buildTarget": "produit-app:build:production"
             },
             "development": {
-              "buildTarget": "tp2-mvvm-angular:build:development"
+              "buildTarget": "produit-app:build:development"
             }
           },
           "defaultConfiguration": "development"
